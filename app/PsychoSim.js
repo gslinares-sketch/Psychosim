@@ -176,13 +176,28 @@ export default function PsychoSim() {
   async function speakText(text) {
     if (!voiceEnabled) return;
     if (currentAudioRef.current) { currentAudioRef.current.pause(); currentAudioRef.current = null; }
+    
+    // Call ElevenLabs directly from browser (avoids server CORS issues)
+    const VOICE_EN = "21m00Tcm4TlvDq8ikWAM"; // Rachel
+    const VOICE_ES = "pFZP5JQG7iQjIQuC4Bku"; // Valentina
+    const voiceId = lang === "es" ? VOICE_ES : VOICE_EN;
+    const apiKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
+    
     try {
       setIsSpeaking(true);
-      const r = await fetch("/api/speak", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lang }),
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "xi-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          text,
+          model_id: "eleven_multilingual_v2",
+          voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3 }
+        }),
       });
-      if (!r.ok) throw new Error("TTS failed");
+      if (!r.ok) throw new Error("ElevenLabs failed");
       const blob = await r.blob();
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
@@ -192,6 +207,7 @@ export default function PsychoSim() {
       await audio.play();
     } catch {
       setIsSpeaking(false);
+      // Fallback to browser TTS
       if (window.speechSynthesis) {
         const u = new SpeechSynthesisUtterance(text);
         u.lang = lang === "es" ? "es-ES" : "en-US";
