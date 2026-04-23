@@ -178,7 +178,7 @@ export default function PsychoSim() {
     if (currentAudioRef.current) { currentAudioRef.current.pause(); currentAudioRef.current = null; }
     
     // Call ElevenLabs directly from browser (avoids server CORS issues)
-    const VOICE_EN = "21m00Tcm4TlvDq8ikWAM"; // Rachel
+    const VOICE_EN = "EXAVITQu4vr4xnSDxMaL"; // Sarah - works on all plans
     const VOICE_ES = "pFZP5JQG7iQjIQuC4Bku"; // Valentina
     const voiceId = lang === "es" ? VOICE_ES : VOICE_EN;
     const apiKey = "sk_d62de5f228a329494d74fce766fd07252e4aea01ef0e37a7";
