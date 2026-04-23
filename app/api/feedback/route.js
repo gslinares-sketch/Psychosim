@@ -6,7 +6,7 @@ export async function POST(req) {
     .map((m) => `${m.role === "user" ? "THERAPIST" : "PATIENT"}: ${m.content}`)
     .join("\n");
 
-  const system = `You are a clinical supervisor reviewing a therapy trainee's session. The trainee was practicing ${modality} therapy at ${difficulty} level.
+  const systemPrompt = `You are a clinical supervisor reviewing a therapy trainee's session. The trainee was practicing ${modality} therapy at ${difficulty} level.
 
 TRANSCRIPT:
 ${transcript}
@@ -26,8 +26,11 @@ Be specific, reference actual lines from the transcript, and be encouraging but 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: [{ role: "user", parts: [{ text: "Provide feedback now." }] }],
+        contents: [
+          { role: "user", parts: [{ text: systemPrompt }] },
+          { role: "model", parts: [{ text: "I will now provide detailed clinical supervision feedback." }] },
+          { role: "user", parts: [{ text: "Please provide your feedback now." }] }
+        ],
         generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
       }),
     }
