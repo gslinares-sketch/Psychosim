@@ -181,7 +181,7 @@ export default function PsychoSim() {
     const VOICE_EN = "21m00Tcm4TlvDq8ikWAM"; // Rachel
     const VOICE_ES = "pFZP5JQG7iQjIQuC4Bku"; // Valentina
     const voiceId = lang === "es" ? VOICE_ES : VOICE_EN;
-    const apiKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
+    const apiKey = "sk_d62de5f228a329494d74fce766fd07252e4aea01ef0e37a7";
     
     try {
       setIsSpeaking(true);
